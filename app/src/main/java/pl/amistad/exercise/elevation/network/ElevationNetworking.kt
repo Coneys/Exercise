@@ -16,20 +16,28 @@ class ElevationNetworking {
     private fun createRetrofit(): Retrofit {
         val baseUrl = "https://tomcat.amistad.pl:8443/navigation-data/"
 
-       TODO("Stwórz instancję Retrofit na podstawie poradnika: https://www.c-sharpcorner.com/article/how-to-use-retrofit-2-with-android-using-kotlin/")
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .build()
     }
 
-    //callback to zwykła lambda, która przyjmuje jako argument Double, ale nie zwraca żadnego wyniku
-    fun fetchElevation(elevationRequest: ElevationRequest, resultCallback: (Double) -> Unit) {
+    fun fetchElevation(
+        elevationRequest: ElevationRequest,
+        resultCallback: (Double) -> Unit,
+        failureCallback: (Throwable) -> Unit
+    ) {
         val call = api.getElevation(elevationRequest.latitude, elevationRequest.longitude)
 
         call.enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-
+            override fun onFailure(call: Call<ResponseBody>?, t: Throwable) {
+                failureCallback.invoke(t)
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>?) {
+                val responseBody = response!!.body()
+                val elevationAsString = responseBody.string()
 
+                resultCallback.invoke(elevationAsString.toDouble())
             }
 
         })
