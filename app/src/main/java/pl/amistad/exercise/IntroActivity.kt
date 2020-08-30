@@ -5,19 +5,21 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_intro.*
+import pl.amistad.exercise.database.Database
+import pl.amistad.exercise.database.introScreenShowed.IntroScreenShowedEntity
 import pl.amistad.exercise.elevation.ElevationRequest
 import pl.amistad.exercise.elevation.network.ElevationNetworking
+import java.util.*
 
 class IntroActivity : AppCompatActivity() {
 
     private val elevationNetworking = ElevationNetworking()
+    private val introShowedDao = Database.db.introShowedDao()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // poniższa metoda nadaje naszemu Activity widok, który został
-        // opisany poprzez plik xml "activity_intro"
         setContentView(R.layout.activity_intro)
 
 
@@ -25,7 +27,22 @@ class IntroActivity : AppCompatActivity() {
             fetchElevationFromServer()
         }
 
+        saveIntroShowed()
 
+        printShowedIntroEvents()
+
+    }
+
+    private fun printShowedIntroEvents() {
+        introShowedDao.getAll().forEach {
+            println("Intro showed " + it.id + it.timeStamp)
+        }
+    }
+
+    private fun saveIntroShowed() {
+        val currentTime = Date().time
+        val entity = IntroScreenShowedEntity(currentTime)
+        introShowedDao.insert(entity)
     }
 
     private fun fetchElevationFromServer() {
