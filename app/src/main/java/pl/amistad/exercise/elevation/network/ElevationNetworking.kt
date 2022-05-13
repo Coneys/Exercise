@@ -14,7 +14,7 @@ class ElevationNetworking {
     private val api = retrofit.create(ElevationApi::class.java)
 
     private fun createRetrofit(): Retrofit {
-        val baseUrl = "https://tomcat.amistad.pl:8443/navigation-data/"
+        val baseUrl = "https://services.amistad.pl/elevation/"
 
         return Retrofit.Builder()
             .baseUrl(baseUrl)

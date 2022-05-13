@@ -67,7 +67,7 @@ class IntroActivity : AppCompatActivity() {
     }
 
     private fun showResult(elevation: Double) {
-        showToast(getString(R.string.msg_elevation_is) + elevation)
+        showToast(getString(R.string.msg_elevation_is) +" "+ elevation)
     }
 
     private fun createRequest(): ElevationRequest {
